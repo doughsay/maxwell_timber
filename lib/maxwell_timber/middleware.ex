@@ -2,10 +2,10 @@ defmodule MaxwellTimber.Middleware do
   require Logger
   use Maxwell.Middleware
 
-  def call(conn, next, _) do
-    log_request(conn)
+  def call(conn, next, opts) do
+    log_request(conn, opts)
 
-    timer = Timber.Timer.start()
+    timer = Timber.start_timer()
 
     response = next.(conn)
 
@@ -14,37 +14,39 @@ defmodule MaxwellTimber.Middleware do
         log_error(reason)
       %Maxwell.Conn{} = response_conn ->
         time_ms = Timber.duration_ms(timer)
-        log_response(response_conn, time_ms)
+        log_response(response_conn, time_ms, opts)
     end
 
     response
   end
 
-  defp log_request(conn) do
-    %URI{host: host, scheme: scheme} = URI.parse(conn.url)
+  defp request_id do
+    Logger.metadata[:request_id]
+  end
 
+  defp log_request(conn, opts) do
     {req_event, req_message} =
       Timber.Events.HTTPClientRequestEvent.new_with_message(
-        host: host,
+        url: serialize_url(conn),
         method: conn.method,
-        path: conn.path,
-        scheme: scheme,
         headers: conn.req_headers,
         body: conn.req_body,
-        request_id: conn.req_headers["x-request-id"]
+        request_id: request_id(),
+        service_name: opts[:service_name]
       )
 
     Logger.info(req_message, event: req_event)
   end
 
-  defp log_response(conn, time_ms) do
+  defp log_response(conn, time_ms, opts) do
     {resp_event, resp_message} =
       Timber.Events.HTTPClientResponseEvent.new_with_message(
         status: conn.status,
         time_ms: time_ms,
         headers: conn.resp_headers,
         body: conn.resp_body,
-        request_id: conn.req_headers["x-request-id"]
+        request_id: request_id(),
+        service_name: opts[:service_name]
       )
     Logger.info(resp_message, event: resp_event)
   end
@@ -53,5 +55,9 @@ defmodule MaxwellTimber.Middleware do
     message = inspect(exception)
     {:ok, event} = Timber.Events.ExceptionEvent.new(message)
     Logger.error(message, event: event)
+  end
+
+  defp serialize_url(%Maxwell.Conn{url: url, path: path, query_string: query_string}) do
+    Maxwell.Adapter.Util.url_serialize(url, path, query_string)
   end
 end

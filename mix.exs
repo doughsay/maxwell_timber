@@ -19,7 +19,7 @@ defmodule MaxwellTimber.Mixfile do
   defp deps do
     [{:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
      {:maxwell, ">= 2.2.0"},
-     {:timber, ">= 1.1.0"}]
+     {:timber, ">= 1.1.17"}]
   end
 
   defp description do

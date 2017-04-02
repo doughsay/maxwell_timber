@@ -31,3 +31,14 @@ defmodule MyClient do
   end
 end
 ```
+
+
+## Configuration
+
+You can pass in an optional `service_name` to this middleware to tag all
+outgoing http requests with the given name. This will be searchable in
+Timber.io's dashboard.
+
+```elixir
+middleware MaxwellTimber.Middleware, [service_name: "my_service"]
+```
