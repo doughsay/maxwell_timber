@@ -17,7 +17,8 @@ defmodule MaxwellTimber.Mixfile do
   end
 
   defp deps do
-    [{:maxwell, ">= 2.2.0"},
+    [{:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+     {:maxwell, ">= 2.2.0"},
      {:timber, ">= 1.1.0"}]
   end
 
@@ -33,6 +34,7 @@ defmodule MaxwellTimber.Mixfile do
   defp package do
     [maintainers: ["Chris Dosé <chris.dose@gmail.com>"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/doughsay/maxwell_timber"}]
+     links: %{"GitHub" => "https://github.com/doughsay/maxwell_timber",
+              "Docs" => "https://hexdocs.pm/maxwell_timber"}]
   end
 end
