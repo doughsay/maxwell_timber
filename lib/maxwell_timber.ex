@@ -1,0 +1,2 @@
+defmodule MaxwellTimber do
+end
