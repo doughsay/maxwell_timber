@@ -51,10 +51,10 @@ defmodule MaxwellTimber.Middleware do
     Logger.info(resp_message, event: resp_event)
   end
 
-  defp log_error(exception) do
-    message = inspect(exception)
-    {:ok, event} = Timber.Events.ExceptionEvent.new(message)
-    Logger.error(message, event: event)
+  defp log_error(reason) do
+    reason
+    |> inspect
+    |> Logger.error
   end
 
   defp serialize_url(%Maxwell.Conn{url: url, path: path, query_string: query_string}) do
