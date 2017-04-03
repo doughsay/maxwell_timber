@@ -3,8 +3,8 @@ defmodule MaxwellTimber.Mixfile do
 
   def project do
     [app: :maxwell_timber,
-     version: "0.2.0",
-     elixir: "~> 1.3",
+     version: "0.3.0",
+     elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      test_coverage: [tool: ExCoveralls],
