@@ -7,7 +7,8 @@ defmodule MaxwellTimberTest do
     conn = %Maxwell.Conn{
       url: "http://example.com",
       status: 200,
-      method: :get
+      method: :get,
+      state: :sent
     }
 
     success = fn(c) -> c end
@@ -21,8 +22,8 @@ defmodule MaxwellTimberTest do
       MaxwellTimber.Middleware.call(conn, success, [])
     end
 
-    assert capture_log(fun) =~ "Outgoing HTTP request to nil [GET]"
-    assert capture_log(fun) =~ "Outgoing HTTP response from nil 200"
+    assert capture_log(fun) =~ "Outgoing HTTP request to [GET]"
+    assert capture_log(fun) =~ "Outgoing HTTP response 200 in"
   end
 
   test "logs errors with a timber event", %{conn: conn, fail: fail} do
@@ -30,7 +31,7 @@ defmodule MaxwellTimberTest do
       MaxwellTimber.Middleware.call(conn, fail, [])
     end
 
-    assert capture_log(fun) =~ "Outgoing HTTP request to nil [GET]"
+    assert capture_log(fun) =~ "Outgoing HTTP request to [GET]"
     assert capture_log(fun) =~ "error!"
   end
 end

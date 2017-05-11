@@ -16,7 +16,7 @@ Add `maxwell_timber` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:maxwell_timber, "~> 0.3.0"}]
+  [{:maxwell_timber, "~> 0.3.1"}]
 end
 ```
 

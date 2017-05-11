@@ -1,6 +1,7 @@
 defmodule MaxwellTimber.Middleware do
   require Logger
   use Maxwell.Middleware
+  alias Maxwell.Conn
 
   def call(conn, next, opts) do
     log_request(conn, opts)
@@ -12,7 +13,7 @@ defmodule MaxwellTimber.Middleware do
     case response do
       {:error, reason, _conn} ->
         log_error(reason)
-      %Maxwell.Conn{} = response_conn ->
+      %Conn{} = response_conn ->
         time_ms = Timber.duration_ms(timer)
         log_response(response_conn, time_ms, opts)
     end
@@ -44,7 +45,7 @@ defmodule MaxwellTimber.Middleware do
         status: conn.status,
         time_ms: time_ms,
         headers: conn.resp_headers,
-        body: conn.resp_body,
+        body: normalize_body(conn),
         request_id: request_id(),
         service_name: opts[:service_name]
       )
@@ -57,7 +58,15 @@ defmodule MaxwellTimber.Middleware do
     |> Logger.error
   end
 
-  defp serialize_url(%Maxwell.Conn{url: url, path: path, query_string: query_string}) do
+  defp serialize_url(%Conn{url: url, path: path, query_string: query_string}) do
     Maxwell.Adapter.Util.url_serialize(url, path, query_string)
+  end
+
+  defp normalize_body(conn) do
+    if Conn.get_resp_header(conn, "content-encoding") == "gzip" do
+      "[gzipped]"
+    else
+      conn.resp_body
+    end
   end
 end
