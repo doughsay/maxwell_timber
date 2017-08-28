@@ -21,7 +21,7 @@ defmodule MaxwellTimber.Mixfile do
     [{:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
      {:excoveralls, "~> 0.6", only: :test},
      {:maxwell, ">= 2.2.0"},
-     {:timber, ">= 1.1.17"}]
+     {:timber, "~> 2.5"}]
   end
 
   defp description do
