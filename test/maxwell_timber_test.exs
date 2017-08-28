@@ -22,8 +22,8 @@ defmodule MaxwellTimberTest do
       MaxwellTimber.Middleware.call(conn, success, [])
     end
 
-    assert capture_log(fun) =~ "Outgoing HTTP request to [GET]"
-    assert capture_log(fun) =~ "Outgoing HTTP response 200 in"
+    assert capture_log(fun) =~ "Sent GET http://example.com"
+    assert capture_log(fun) =~ "Sent 200 response in"
   end
 
   test "logs errors with a timber event", %{conn: conn, fail: fail} do
@@ -31,7 +31,7 @@ defmodule MaxwellTimberTest do
       MaxwellTimber.Middleware.call(conn, fail, [])
     end
 
-    assert capture_log(fun) =~ "Outgoing HTTP request to [GET]"
+    assert capture_log(fun) =~ "Sent GET http://example.com"
     assert capture_log(fun) =~ "error!"
   end
 end

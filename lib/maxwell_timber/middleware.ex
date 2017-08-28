@@ -2,6 +2,7 @@ defmodule MaxwellTimber.Middleware do
   require Logger
   use Maxwell.Middleware
   alias Maxwell.Conn
+  alias Timber.Events.{HTTPRequestEvent, HTTPResponseEvent}
 
   def call(conn, next, opts) do
     log_request(conn, opts)
@@ -26,8 +27,9 @@ defmodule MaxwellTimber.Middleware do
   end
 
   defp log_request(conn, opts) do
-    {req_event, req_message} =
-      Timber.Events.HTTPClientRequestEvent.new_with_message(
+    req_event =
+      HTTPRequestEvent.new(
+        direction: "outgoing",
         url: serialize_url(conn),
         method: conn.method,
         headers: conn.req_headers,
@@ -35,20 +37,24 @@ defmodule MaxwellTimber.Middleware do
         request_id: request_id(),
         service_name: opts[:service_name]
       )
+    req_message = HTTPRequestEvent.message(req_event)
 
     Logger.info(req_message, event: req_event)
   end
 
   defp log_response(conn, time_ms, opts) do
-    {resp_event, resp_message} =
-      Timber.Events.HTTPClientResponseEvent.new_with_message(
-        status: conn.status,
-        time_ms: time_ms,
-        headers: conn.resp_headers,
-        body: normalize_body(conn),
-        request_id: request_id(),
-        service_name: opts[:service_name]
-      )
+    resp_event = HTTPResponseEvent.new(
+      direction: "outgoing",
+      status: conn.status,
+      time_ms: time_ms,
+      headers: conn.resp_headers,
+      body: normalize_body(conn),
+      request_id: request_id(),
+      service_name: opts[:service_name]
+    )
+
+    resp_message = HTTPResponseEvent.message(resp_event)
+
     Logger.info(resp_message, event: resp_event)
   end
 
