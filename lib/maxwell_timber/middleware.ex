@@ -1,4 +1,22 @@
 defmodule MaxwellTimber.Middleware do
+  @moduledoc """
+  Maxwell middleware for logging outgoing requests to Timber.io.
+
+  Using this middleware will log all requests and responses using Timber.io formatting and metadata.
+
+  ### Example usage
+  ```
+  defmodule MyClient do
+    use Maxwell.Builder, ~w(get)a
+    middleware MaxwellTimber.Middleware
+  end
+  ```
+
+  ### Options
+
+  - `:service_name` - the name of the external service (optional)
+  """
+
   require Logger
   use Maxwell.Middleware
   alias Maxwell.Conn
@@ -14,6 +32,7 @@ defmodule MaxwellTimber.Middleware do
     case response do
       {:error, reason, _conn} ->
         log_error(reason)
+
       %Conn{} = response_conn ->
         time_ms = Timber.duration_ms(timer)
         log_response(response_conn, time_ms, opts)
@@ -23,7 +42,7 @@ defmodule MaxwellTimber.Middleware do
   end
 
   defp request_id do
-    Logger.metadata[:request_id]
+    Logger.metadata()[:request_id]
   end
 
   defp log_request(conn, opts) do
@@ -37,21 +56,23 @@ defmodule MaxwellTimber.Middleware do
         request_id: request_id(),
         service_name: opts[:service_name]
       )
+
     req_message = HTTPRequestEvent.message(req_event)
 
     Logger.info(req_message, event: req_event)
   end
 
   defp log_response(conn, time_ms, opts) do
-    resp_event = HTTPResponseEvent.new(
-      direction: "outgoing",
-      status: conn.status,
-      time_ms: time_ms,
-      headers: conn.resp_headers,
-      body: normalize_body(conn),
-      request_id: request_id(),
-      service_name: opts[:service_name]
-    )
+    resp_event =
+      HTTPResponseEvent.new(
+        direction: "incoming",
+        status: conn.status,
+        time_ms: time_ms,
+        headers: conn.resp_headers,
+        body: normalize_body(conn),
+        request_id: request_id(),
+        service_name: opts[:service_name]
+      )
 
     resp_message = HTTPResponseEvent.message(resp_event)
 
@@ -61,7 +82,7 @@ defmodule MaxwellTimber.Middleware do
   defp log_error(reason) do
     reason
     |> inspect
-    |> Logger.error
+    |> Logger.error()
   end
 
   defp serialize_url(%Conn{url: url, path: path, query_string: query_string}) do

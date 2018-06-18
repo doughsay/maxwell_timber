@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/doughsay/maxwell_timber.svg?branch=master)](https://travis-ci.org/doughsay/maxwell_timber)
 [![Code Coverage](https://img.shields.io/codecov/c/github/doughsay/maxwell_timber.svg)](https://codecov.io/gh/doughsay/maxwell_timber)
 [![Hex.pm](https://img.shields.io/hexpm/v/maxwell_timber.svg)](http://hex.pm/packages/maxwell_timber)
-[![Deps Status](https://beta.hexfaktor.org/badge/all/github/doughsay/maxwell_timber.svg)](https://beta.hexfaktor.org/github/doughsay/maxwell_timber)
 
 Maxwell middleware for logging outgoing requests to Timer.io.
 
@@ -16,7 +15,7 @@ Add `maxwell_timber` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:maxwell_timber, "~> 0.4"}]
+  [{:maxwell_timber, "~> 0.5"}]
 end
 ```
 
