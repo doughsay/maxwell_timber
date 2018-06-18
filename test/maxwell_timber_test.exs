@@ -11,8 +11,8 @@ defmodule MaxwellTimberTest do
       state: :sent
     }
 
-    success = fn(c) -> c end
-    fail = fn(c) -> {:error, "error!", c} end
+    success = fn c -> c end
+    fail = fn c -> {:error, "error!", c} end
 
     %{conn: conn, success: success, fail: fail}
   end
@@ -23,7 +23,7 @@ defmodule MaxwellTimberTest do
     end
 
     assert capture_log(fun) =~ "Sent GET http://example.com"
-    assert capture_log(fun) =~ "Sent 200 response in"
+    assert capture_log(fun) =~ "Received 200 response"
   end
 
   test "logs errors with a timber event", %{conn: conn, fail: fail} do
