@@ -47,7 +47,7 @@ defmodule MaxwellTimber.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.6", only: :test},
       {:maxwell, ">= 2.2.0"},
