@@ -51,7 +51,7 @@ defmodule MaxwellTimber.Mixfile do
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.6", only: :test},
       {:maxwell, ">= 2.2.0"},
-      {:timber, "~> 2.5"}
+      {:timber, "~> 3.0"}
     ]
   end
 end
